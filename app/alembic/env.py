@@ -7,6 +7,7 @@ from alembic import context
 
 import sys
 import os
+from app.core.database import database_url
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
@@ -22,9 +23,9 @@ if config.config_file_name is not None:
 
 
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-if DATABASE_URL:
-    config.set_main_option("sqlalchemy.url", DATABASE_URL)
+database_url = os.getenv("DATABASE_URL")
+if database_url:
+    config.set_main_option("sqlalchemy.url", database_url)
 
 
 # add your model's MetaData object here
