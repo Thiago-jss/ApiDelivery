@@ -8,7 +8,7 @@ logger = logging.getLogger("app.database")
 database_url = os.getenv("DATABASE_URL")
 
 if not database_url:
-    raise RuntimeError("DATABASE_URL")
+    raise RuntimeError("DATABASE_URL defina")
 
 if database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
