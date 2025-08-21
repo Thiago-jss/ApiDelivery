@@ -9,7 +9,7 @@ import sys
 import os
 
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -21,12 +21,19 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+if DATABASE_URL:
+    config.set_main_option("sqlalchemy.url", DATABASE_URL)
+
+
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 
-from models import Base
+from app.core.database import Base
+from app.models import *
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

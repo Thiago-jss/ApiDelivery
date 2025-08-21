@@ -1,15 +1,14 @@
-from models import db
+from app.core.database import SessionLocal
 from sqlalchemy.orm import sessionmaker, Session
 from fastapi import Depends, HTTPException
 from jose import jwt, JWTError
-from main import SECRET_KEY, ALGORITHM, oauths2_scheme
-from models import User
+from app.main import SECRET_KEY, ALGORITHM, oauths2_scheme
+from app.models.tables import User
 
 
 def get_session():
+    session = SessionLocal()
     try:
-        Session = sessionmaker(bind=db)
-        session = Session()
         yield session
     finally:
         session.close()

@@ -1,10 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Boolean, Float
-from sqlalchemy.orm import declarative_base, relationship
-
-db = create_engine("sqlite:///./dados.db")
-
-Base = declarative_base()
-
+from sqlalchemy.orm import declarative_base, relationship,sessionmaker
+from app.core.database import Base
 
 #building tables that will be used in the database
 
