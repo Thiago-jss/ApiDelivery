@@ -7,7 +7,6 @@ from alembic import context
 
 import sys
 import os
-from app.core.database import database_url
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
