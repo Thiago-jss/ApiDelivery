@@ -1,8 +1,14 @@
+# ...existing code...
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
+# ...existing code...
 database_url = os.getenv("DATABASE_URL")
+
+# ...existing code...
+if not database_url:
+    raise RuntimeError("DATABASE_URL não está definida. Configure a variável de ambiente no Render.")
 
 # sqlite needs special connect_args
 connect_args = {"check_same_thread": False} if database_url.startswith("sqlite") else {}
@@ -16,3 +22,4 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+# ...existing code...
