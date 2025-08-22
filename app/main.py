@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from dotenv import load_dotenv
 import os
-from app.core.database import init_db
+
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -14,8 +14,9 @@ app = FastAPI()
 
 @app.on_event("startup")
 def on_startup():
-
-    init_db()
+    # cria o sqlite (se ainda não existir) e registra tabelas definidas em app.models
+    from app.core.database import criar_bd
+    criar_bd()
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauths2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login-form")
