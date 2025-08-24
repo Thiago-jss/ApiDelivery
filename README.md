@@ -10,10 +10,21 @@ Swagger UI --> https://api-delivery-tuk2.onrender.com/docs#/
 
 ---
 
-<h2 align="left">🛠️ Tecnologias Utilizadas:
+<h2 align="left">🛠️ Tecnologias Utilizadas:</h2>
 
-Python 3.13, FastAPI, SQLAlchemy, Alembic, Docker, Render</h2>
+Python 3.13
 
+FastAPI
+
+SQLAlchemy
+
+Alembic
+
+Docker
+
+Render
+
+---
 Objetivo técnico: autenticação com JWT, CRUD de pedidos e itens, migrações com Alembic e deploy com Docker/Render
 
 Abordagem: separar responsabilidades (core, models, routes), garantir que o banco seja criado automaticamente em ambientes simples e manter a porta aberta para migrar para Postgres quando fizer sentido
