@@ -8,7 +8,7 @@ from sqlalchemy import pool
 from alembic import context
 
 # ajusta sys.path para permitir imports do package app
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -27,7 +27,9 @@ if database_url:
 
 from app.core.database import Base
 from app.models import *
+
 target_metadata = Base.metadata
+
 
 def run_migrations_offline() -> None:
     url = config.get_main_option("sqlalchemy.url")

@@ -1,8 +1,16 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Boolean, Float
-from sqlalchemy.orm import declarative_base, relationship,sessionmaker
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    Boolean,
+    Float,
+)
+from sqlalchemy.orm import relationship
 from app.core.database import Base
 
-#building tables that will be used in the database
+# building tables that will be used in the database
+
 
 class User(Base):
     __tablename__ = "users"
@@ -25,8 +33,8 @@ class Order(Base):
     __tablename__ = "orders"
 
     id = Column("id", Integer, primary_key=True, autoincrement=True)
-    user_id = Column("user_id", Integer, ForeignKey("users.id")) 
-    status = Column("status", String) # result in pending, finished, canceled
+    user_id = Column("user_id", Integer, ForeignKey("users.id"))
+    status = Column("status", String)  # result in pending, finished, canceled
     price = Column("price", Float)
     items = relationship("OrderItem", cascade="all, delete")
 
@@ -34,7 +42,7 @@ class Order(Base):
         self.user_id = user_id
         self.status = status
         self.price = price
-    
+
     def calculate_price(self):
         self.price = sum(item.unit_price * item.quantity for item in self.items)
 
@@ -43,11 +51,11 @@ class OrderItem(Base):
     __tablename__ = "order_items"
 
     id = Column("id", Integer, primary_key=True, autoincrement=True)
-    quantity = Column("quantity", Integer) 
+    quantity = Column("quantity", Integer)
     flavor = Column("flavor", String, nullable=False)
     size = Column("size", String)
     unit_price = Column("unit_price", Float)
-    order_id = Column("order_id", Integer, ForeignKey("orders.id"))    
+    order_id = Column("order_id", Integer, ForeignKey("orders.id"))
 
     def __init__(self, quantity, flavor, size, unit_price, order_id):
         self.quantity = quantity
@@ -55,4 +63,3 @@ class OrderItem(Base):
         self.size = size
         self.unit_price = unit_price
         self.order_id = order_id
-

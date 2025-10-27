@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
 
+
 class UserSchema(BaseModel):
     email: str
     username: str
@@ -11,12 +12,13 @@ class UserSchema(BaseModel):
     class Config:
         from_attributes = True
 
+
 class OrderSchema(BaseModel):
     user_id: int
 
-
     class Config:
         from_attributes = True
+
 
 class LoginSchema(BaseModel):
     email: str
@@ -24,6 +26,7 @@ class LoginSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class ItemSchema(BaseModel):
     quantity: int
@@ -34,6 +37,7 @@ class ItemSchema(BaseModel):
     class Config:
         from_attributes = True
 
+
 class ResponseOrderSchema(BaseModel):
     id: int
     status: str
@@ -42,5 +46,3 @@ class ResponseOrderSchema(BaseModel):
 
     class Config:
         from_attributes = True
-    
-    

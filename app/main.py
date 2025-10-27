@@ -10,13 +10,16 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
-app = FastAPI() 
+app = FastAPI()
+
 
 @app.on_event("startup")
 def on_startup():
     # cria o sqlite (se ainda não existir) e registra tabelas definidas em app.models
     from app.core.database import criar_bd
+
     criar_bd()
+
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauths2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login-form")

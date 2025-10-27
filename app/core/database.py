@@ -24,9 +24,10 @@ Base = declarative_base()
 
 
 def criar_bd():
-    
+
     try:
         import app.models as _models_pkg
+
         for _finder, _name, _ispkg in pkgutil.iter_modules(_models_pkg.__path__):
             importlib.import_module(f"{_models_pkg.__name__}.{_name}")
     except Exception as e:
