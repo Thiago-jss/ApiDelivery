@@ -117,4 +117,4 @@ class TestAuthEndpoints:
         assert response.status_code == 200
         data = response.json()
         assert "message" in data
-        assert data["authentication"] == False
+        assert not data["authentication"]

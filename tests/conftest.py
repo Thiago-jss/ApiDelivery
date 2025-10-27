@@ -2,7 +2,6 @@
 Pytest fixtures for API testing
 """
 
-import os
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -21,7 +20,6 @@ def test_engine():
     """Create a test database engine"""
     engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})
     # Import models to ensure they're registered
-    from app.models.tables import User, Order, OrderItem
 
     # Create all tables
     Base.metadata.create_all(bind=engine)
