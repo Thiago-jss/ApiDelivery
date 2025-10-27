@@ -15,7 +15,10 @@ app = FastAPI()
 
 @app.on_event("startup")
 def on_startup():
-    # cria o sqlite (se ainda não existir) e registra tabelas definidas em app.models
+
+    os.makedirs("./data", exist_ok=True)
+
+
     from app.core.database import criar_bd
 
     criar_bd()
