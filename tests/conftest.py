@@ -1,6 +1,7 @@
 """
 Pytest fixtures for API testing
 """
+
 import os
 import pytest
 from sqlalchemy import create_engine
@@ -18,11 +19,10 @@ TEST_DATABASE_URL = "sqlite:///:memory:"
 @pytest.fixture(scope="function")
 def test_engine():
     """Create a test database engine"""
-    engine = create_engine(
-        TEST_DATABASE_URL, connect_args={"check_same_thread": False}
-    )
+    engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})
     # Import models to ensure they're registered
     from app.models.tables import User, Order, OrderItem
+
     # Create all tables
     Base.metadata.create_all(bind=engine)
     yield engine
@@ -33,7 +33,9 @@ def test_engine():
 @pytest.fixture(scope="function")
 def test_db(test_engine):
     """Create a fresh database session for each test"""
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+    TestingSessionLocal = sessionmaker(
+        autocommit=False, autoflush=False, bind=test_engine
+    )
     db = TestingSessionLocal()
     try:
         yield db
@@ -44,17 +46,18 @@ def test_db(test_engine):
 @pytest.fixture(scope="function")
 def client(test_db, test_engine):
     """FastAPI test client with overridden database"""
+
     def override_get_session():
         try:
             yield test_db
         finally:
             pass
-    
+
     app.dependency_overrides[get_session] = override_get_session
-    
+
     with TestClient(app) as test_client:
         yield test_client
-    
+
     app.dependency_overrides.clear()
 
 
@@ -67,7 +70,7 @@ def sample_user(test_db):
         username="testuser",
         password=hashed_password,
         active=True,
-        admin=False
+        admin=False,
     )
     test_db.add(user)
     test_db.commit()
@@ -84,7 +87,7 @@ def sample_admin(test_db):
         username="adminuser",
         password=hashed_password,
         active=True,
-        admin=True
+        admin=True,
     )
     test_db.add(admin)
     test_db.commit()
@@ -96,8 +99,7 @@ def sample_admin(test_db):
 def user_token(client, sample_user):
     """Get authentication token for regular user"""
     response = client.post(
-        "/auth/login",
-        json={"email": "user@example.com", "password": "testpassword123"}
+        "/auth/login", json={"email": "user@example.com", "password": "testpassword123"}
     )
     assert response.status_code == 200
     return response.json()["access_token"]
@@ -107,8 +109,7 @@ def user_token(client, sample_user):
 def admin_token(client, sample_admin):
     """Get authentication token for admin user"""
     response = client.post(
-        "/auth/login",
-        json={"email": "admin@example.com", "password": "adminpass123"}
+        "/auth/login", json={"email": "admin@example.com", "password": "adminpass123"}
     )
     assert response.status_code == 200
     return response.json()["access_token"]
@@ -131,28 +132,28 @@ def sample_order_with_items(test_db, sample_user):
     test_db.add(order)
     test_db.commit()
     test_db.refresh(order)
-    
+
     # Add items
     item1 = OrderItem(
         quantity=2,
         flavor="Pepperoni",
         size="Large",
         unit_price=15.99,
-        order_id=order.id
+        order_id=order.id,
     )
     item2 = OrderItem(
         quantity=1,
         flavor="Margherita",
         size="Medium",
         unit_price=12.99,
-        order_id=order.id
+        order_id=order.id,
     )
     test_db.add(item1)
     test_db.add(item2)
     test_db.commit()
-    
+
     order.calculate_price()
     test_db.commit()
     test_db.refresh(order)
-    
+
     return order
