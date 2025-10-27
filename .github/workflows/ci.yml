@@ -45,7 +45,7 @@ jobs:
       SECRET_KEY: test-secret-key-for-ci-only-not-for-production
       ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 30
-      DATABASE_URL: sqlite:///:memory:
+      DATABASE_URL: "sqlite:///:memory:"
     steps:
       - uses: actions/checkout@v4
 
@@ -116,4 +116,3 @@ jobs:
           sleep 10
           docker logs test-container
           docker stop test-container
-
