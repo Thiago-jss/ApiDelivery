@@ -11,15 +11,18 @@ from app.models.tables import User, Order, OrderItem
 from app.main import app, bcrypt_context
 from app.models.dependencies import get_session
 
-# Use in-memory SQLite for tests
-TEST_DATABASE_URL = "sqlite:///:memory:"
+# Use in-memory SQLite for tests with shared cache
+TEST_DATABASE_URL = "sqlite:///file:testdb?mode=memory&cache=shared&uri=true"
 
 
 @pytest.fixture(scope="function")
 def test_engine():
     """Create a test database engine"""
-    engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})
-    # Import models to ensure they're registered
+    engine = create_engine(
+        TEST_DATABASE_URL,
+        connect_args={"check_same_thread": False, "uri": True},
+        poolclass=None  # Disable pooling for in-memory database
+    )
 
     # Create all tables
     Base.metadata.create_all(bind=engine)
@@ -42,14 +45,20 @@ def test_db(test_engine):
 
 
 @pytest.fixture(scope="function")
-def client(test_db, test_engine):
+def client(test_engine):
     """FastAPI test client with overridden database"""
 
+    # Create a session factory for the test engine
+    TestingSessionLocal = sessionmaker(
+        autocommit=False, autoflush=False, bind=test_engine
+    )
+
     def override_get_session():
+        db = TestingSessionLocal()
         try:
-            yield test_db
+            yield db
         finally:
-            pass
+            db.close()
 
     app.dependency_overrides[get_session] = override_get_session
 
@@ -150,7 +159,8 @@ def sample_order_with_items(test_db, sample_user):
     test_db.add(item2)
     test_db.commit()
 
-    order.calculate_price()
+    # Calculate total price
+    order.price = (item1.quantity * item1.unit_price) + (item2.quantity * item2.unit_price)
     test_db.commit()
     test_db.refresh(order)
 
