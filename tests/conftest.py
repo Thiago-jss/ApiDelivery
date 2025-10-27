@@ -21,7 +21,7 @@ def test_engine():
     engine = create_engine(
         TEST_DATABASE_URL,
         connect_args={"check_same_thread": False, "uri": True},
-        poolclass=None  # Disable pooling for in-memory database
+        poolclass=None,  # Disable pooling for in-memory database
     )
 
     # Create all tables
@@ -106,7 +106,8 @@ def sample_admin(test_db):
 def user_token(client, sample_user):
     """Get authentication token for regular user"""
     response = client.post(
-        "/auth/login", json={"email": "user@example.com", "password": "testpassword123"}
+        "/auth/login",
+        json={"email": "user@example.com", "password": "testpassword123"},
     )
     assert response.status_code == 200
     return response.json()["access_token"]
@@ -116,7 +117,8 @@ def user_token(client, sample_user):
 def admin_token(client, sample_admin):
     """Get authentication token for admin user"""
     response = client.post(
-        "/auth/login", json={"email": "admin@example.com", "password": "adminpass123"}
+        "/auth/login",
+        json={"email": "admin@example.com", "password": "adminpass123"},
     )
     assert response.status_code == 200
     return response.json()["access_token"]
@@ -160,7 +162,9 @@ def sample_order_with_items(test_db, sample_user):
     test_db.commit()
 
     # Calculate total price
-    order.price = (item1.quantity * item1.unit_price) + (item2.quantity * item2.unit_price)
+    order.price = (item1.quantity * item1.unit_price) + (
+        item2.quantity * item2.unit_price
+    )
     test_db.commit()
     test_db.refresh(order)
 
