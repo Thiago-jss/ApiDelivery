@@ -12,22 +12,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install black ruff mypy
-      
+
       - name: Format check with Black
         run: black --check .
-      
+
       - name: Lint with Ruff
         run: ruff check . --ignore E402 --ignore F403
 
@@ -41,32 +41,30 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.11', '3.12', '3.13']
-    
     env:
       SECRET_KEY: test-secret-key-for-ci-only-not-for-production
       ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 30
       DATABASE_URL: sqlite:///:memory:
-
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov pytest-asyncio httpx faker
-      
+
       - name: Run tests with coverage
         run: |
           pytest tests/ --cov=app --cov=routes --cov=scheme --cov-report=xml --cov-report=term-missing -v
-      
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         if: matrix.python-version == '3.13'
@@ -82,19 +80,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pip-audit
-      
+
       - name: Run pip-audit
         run: pip-audit --desc
         continue-on-error: true
@@ -105,16 +103,17 @@ jobs:
     needs: [lint, test]
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
+
       - name: Build Docker image
         run: docker build -t api-delivery:${{ github.sha }} .
-      
+
       - name: Test Docker image
         run: |
           docker run -d --name test-container -p 8000:8000 api-delivery:${{ github.sha }}
           sleep 10
           docker logs test-container
           docker stop test-container
+
